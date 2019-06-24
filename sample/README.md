@@ -14,10 +14,13 @@ $ kubens [namespace_name]
 ```
 # コマンドから
 $ kubectl run --image=nginx:1.12 sample-deployment --replicas 3
+
 # コマンドから(一部のリソースのみ)
 $ kubectl create [resource] [name]
+
 # マニフェストファイルから
 $ kubectl apply -f [manifestfile_path]
+
 # ディレクトリ内のファイルを適用
 # -Rで再帰的に適用
 $ kubectl apply -f ./ -R
