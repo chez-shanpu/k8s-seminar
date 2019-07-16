@@ -237,8 +237,10 @@ spec:
 <p>
 
 `Deployment.spec.strategy`で`RollingUpdate`を選択します
+
 `maxUnavailable`は稼働状態のPodがレプリカ数から最大何個マイナスになってもよいか，
 `maxSurge`は稼働状態のPodがレプリカ数から最大何個プラスになってもよいかを定義します
+
 マニフェスト例
 ```yaml
 apiVersion: apps/v1
