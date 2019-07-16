@@ -320,10 +320,89 @@ spec:
 
 ## 上級
 - 80番ポートを開いた`nginx`イメージを用いたPodを作成してください．
-  - そのPodに対してClusterIPを割り当ててください．
-  - `ubuntu`イメージを用いたPodを作成し，上で作成したPodのnginxコンテナの80番ポートに対してcurl等を用いてGETリクエストを送ってください．
+  - `ubuntu`イメージを用いたPodを作成しそのPod内にログインし，上で作成したPodのnginxコンテナの80番ポートに対してcurl等を用いてGETリクエストを送ってください．
+  - Service/NodePortを作成してください．このときServiceの8080番ポートをPodの80番ポートに紐づけるようにしてください．
+  - Cluster外部(NodeにSSHもしない)から適切なポート番号を用いてnginx PodにGETリクエストを送ってください．
+<details><summary>answer</summary>
+<p>
+
+```
+# Podを作成
+$ kubectl run nginx --image=nginx:latest --restart=Never --port=80
+$ kubectl run ubuntu --image=ubuntu:latest --restart=Never
+
+# PodのIPを確認する
+$ kubectl get po -o wide
+
+# コンテナにログイン
+$ kubectl exec ubuntu -it /bin/bash
+root@ubuntu $ apt update 
+root@ubuntu $ apt install curl
+root@ubuntu $ curl {Pod_IP}:80
+
+# NodePortを作成
+$ kubectl create service nodeport my-ns --tcp=8080:80
+# selectorに該当するようにPodにラベルを追加する
+$ kubectl edit po nginx
+
+# nodeのIP調べる
+$ kubectl get no -o wide
+
+# NodePortの開いているノードのポート番号を調べる
+$ kubectl get svc
+
+# GETする
+$ curl {nodeのIP}:{nodeのPort} 
+```
+</p>
+</details>
+
 - レプリカ数3の`nginx:1.12`イメージを用いたデプロイメントを作成してください．
   - イメージを`nginx:latest`に変更してください．
-  - デプロイメントのローリングアップデートの情報を表示してください．
+  - デプロイメントの変更履歴を表示してください．
   - `nginx:1.12`にロールアウトしてください．
   - 再度ロールアウトしてください．その後`nginx`イメージのバージョンを確認してください．
+<details><summary>answer</summary>
+<p>
+
+```
+# deploymentの作成
+$ kubectl apply -f <file_path> --record
+
+# deploy.spec.template.spec.containers.imageを書き換える
+$ kubectl edit deployment <deployment_name>
+
+# デプロイメントの変更履歴を見る
+$ kubectl rollout history deployment <deployment_name>
+
+# ロールアウトする
+$ kubectl rollout undo deploy <deployment_name>
+
+# もう一度
+$ kubectl rollout undo deploy <deployment_name>
+# これを行うと最初にロールアウトを行う前の状態になる(kubectl get deploymentなどで確認してみるとよい)
+# 二つ以上前に戻りたい場合は --to-revision でリビジョンを指定してあげる必要がある
+```
+
+マニフェスト例
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy-demo
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: sample-app
+  template:
+    metadata:
+      labels:
+        app: sample-app
+    spec:
+      containers:
+        - name: nginx-container
+          image: nginx:1.12
+```
+</p>
+</details>
