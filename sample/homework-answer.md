@@ -322,7 +322,7 @@ spec:
 
 ## 上級
 - 80番ポートを開いた`nginx`イメージを用いたPodを作成してください．
-  - `ubuntu`イメージを用いたPodを作成しそのPod内にログインし，上で作成したPodのnginxコンテナの80番ポートに対してcurl等を用いてGETリクエストを送ってください．
+  - `ubuntu`イメージを用いたPodを作成しそのPod内にログインし，上で作成したPodのnginxコンテナの80番ポートに対してcurl等を用いてGETリクエストを送ってください．(ubuntuイメージはそのままだとcompleteステータスになるので`--command -- sleep 3600`等を使ってすぐにcompleteにならないようにしてください)
   - Service/NodePortを作成してください．このときServiceの8080番ポートをPodの80番ポートに紐づけるようにしてください．
   - Cluster外部(NodeにSSHもしない)から適切なポート番号を用いてnginx PodにGETリクエストを送ってください．
 <details><summary>answer</summary>
