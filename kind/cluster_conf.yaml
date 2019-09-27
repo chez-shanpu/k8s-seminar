@@ -1,0 +1,40 @@
+kind: Cluster
+apiVersion: kind.sigs.k8s.io/v1alpha3
+nodes:
+- role: control-plane
+- role: control-plane
+- role: control-plane
+- role: worker
+  extraMounts:
+  - containerPath: /host
+    hostPath: /usr/local/lib/kind/worker1
+    readOnly: false
+- role: worker
+  extraMounts:
+  - containerPath: /host
+    hostPath: /usr/local/lib/kind/worker2
+    readOnly: false
+- role: worker
+  extraMounts:
+  - containerPath: /host
+    hostPath: /usr/local/lib/kind/worker3
+    readOnly: false
+  extraPortMappings:
+  - containerPort: 30101
+    hostPort: 30101
+  - containerPort: 30102
+    hostPort: 30102
+  - containerPort: 30103
+    hostPort: 30103
+  - containerPort: 30104
+    hostPort: 30104
+  - containerPort: 30105
+    hostPort: 30105
+  - containerPort: 30106
+    hostPort: 30106
+  - containerPort: 30107
+    hostPort: 30107
+  - containerPort: 30108
+    hostPort: 30108
+  - containerPort: 30109
+    hostPort: 30109
